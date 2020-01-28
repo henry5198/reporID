@@ -72,47 +72,50 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
 
     @Override
     public void processFinish(String result) throws JSONException {
-        try {
-            JSONArray jsonArray = new JSONArray(result);
-            //JSONObject jsonObject = jsonArray.getJSONObject(0);
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String insidencia="";
-                JSONObject c = jsonArray.getJSONObject(i);
-                String fecha_reporte = c.getString("fecha_reporte");
-                String descripcion = c.getString("descripcion");
-                Double latitud = c.getDouble("latitud_geo");
-                Double longitud = c.getDouble("longitud_geo");
-                JSONArray tipo_incidencia = c.getJSONArray("incidencias");
-                for(int j=0;j<tipo_incidencia.length();j++){
-                    JSONObject c1 = tipo_incidencia.getJSONObject(j);
-                    if(j==tipo_incidencia.length()-1)
-                        insidencia= insidencia+c1.getString("tipo_incidencia");
-                    else
-                        insidencia= insidencia+c1.getString("tipo_incidencia")+"\n";
+            try {
+                JSONArray jsonArray = new JSONArray(result);
+                //JSONObject jsonObject = jsonArray.getJSONObject(0);
 
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String insidencia="";
+                    JSONObject c = jsonArray.getJSONObject(i);
+                    String fecha_reporte = c.getString("fecha_reporte");
+                    String descripcion = c.getString("descripcion");
+                    Double latitud = c.getDouble("latitud_geo");
+                    Double longitud = c.getDouble("longitud_geo");
+                    JSONArray tipo_incidencia = c.getJSONArray("incidencias");
+                    for(int j=0;j<tipo_incidencia.length();j++){
+                        JSONObject c1 = tipo_incidencia.getJSONObject(j);
+                        if(j==tipo_incidencia.length()-1)
+                            insidencia= insidencia+c1.getString("tipo_incidencia");
+                        else
+                            insidencia= insidencia+c1.getString("tipo_incidencia")+"\n";
+
+                    }
+                    String img="https://png.pngtree.com/png-clipart/20190922/original/pngtree-illustration-of-a-policeman-chasing-a-thief-with-stolen-bag-png-image_4795709.jpg";
+                    items.add(new VariablesReportes(latitud,longitud,img,insidencia,descripcion,fecha_reporte));
                 }
-                String img="https://png.pngtree.com/png-clipart/20190922/original/pngtree-illustration-of-a-policeman-chasing-a-thief-with-stolen-bag-png-image_4795709.jpg";
-                items.add(new VariablesReportes(latitud,longitud,img,insidencia,descripcion,fecha_reporte));
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
 
-        for(int i = 0; i < items.size(); i++){
-            VariablesReportes vp = items.get(i);
-            LatLng punto = new LatLng(vp.getLatitud(), vp.getLongitud());
-            mapa.addMarker(new MarkerOptions().position(punto).title(vp.getTipoReporte()));
-        }
+            for(int i = 0; i < items.size(); i++){
+                VariablesReportes vp = items.get(i);
+                LatLng punto = new LatLng(vp.getLatitud(), vp.getLongitud());
+                mapa.addMarker(new MarkerOptions().position(punto).title(vp.getTipoReporte()));
+            }
 
-        recycle = (RecyclerView)findViewById(R.id.recycler_viewListReports);
-        recycle.setHasFixedSize(true);
+            recycle = (RecyclerView)findViewById(R.id.recycler_viewListReports);
+            recycle.setHasFixedSize(true);
 
-        lManager=new LinearLayoutManager(this);
-        recycle.setLayoutManager(lManager);
+            lManager=new LinearLayoutManager(this);
+            recycle.setLayoutManager(lManager);
 
-        adapter= new ReporteAdapter(items);
-        recycle.setAdapter(adapter);
+            adapter= new ReporteAdapter(items);
+            recycle.setAdapter(adapter);
+
+
     }
 
     @Override
@@ -150,6 +153,7 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
 
     }
     public void acepta(View v){
+
         if(seleccionado){
             Intent intent = new Intent(Principal_Activity.this, Reporte_Activity.class);
             intent.putExtra("latitud",latitud);
@@ -159,6 +163,8 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
         }else{
             Toast.makeText(this,"No ha seleccionado la ubicación", Toast.LENGTH_LONG).show();
         }
+
+
     }
     public void cancela(View v){
         btnReporte.show();

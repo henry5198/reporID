@@ -51,7 +51,7 @@ import WebService.WebService;
 
 public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
 
-    private String[] tiposIncidencias;
+    private String[] tiposIncidencias={"Robo a persona","Robo a vehiculo","Robo a comercio","Homicidio","Venta de Drogas","Accidente Vehicular","Pelea"};
     private Toolbar toolbar;
     private TextInputEditText txtFecha, txtDescripcion;
     private int dia, mes, anio;
@@ -66,6 +66,8 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     private String fecha, tipoDelito, Url;
     private Switch swAnonimo;
     ProgressDialog dial;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,28 +97,39 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         storageReference= FirebaseStorage.getInstance().getReference("0850029802");
         checkCameraPermission();
 
-        //Lista de Incidencias
-        Map<String, String> datos = new HashMap<String, String>();
-        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Reporte_Activity.this, Reporte_Activity.this);
-        datos.put("method", "list_incidence");
-        ws.setDatos(datos);
-        ws.execute("");
-    }
-
-    @Override
-    public void processFinish(String result) throws JSONException {
-        JSONArray jsonArray = new JSONArray(result);
-        tiposIncidencias = new String[jsonArray.length()];
-        for (int i=0;i<jsonArray.length();i++){
-            JSONObject c = jsonArray.getJSONObject(i);
-
-            tiposIncidencias[i]=c.getString("tipo_incidencia");
-        }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, tiposIncidencias);
         materialDesignSpinner = (MaterialBetterSpinner)
                 findViewById(R.id.android_material_design_spinner);
         materialDesignSpinner.setAdapter(arrayAdapter);
+
+        /*materialDesignSpinner = (MaterialBetterSpinner)findViewById(R.id.android_material_design_spinner);
+        //Lista de Incidencias
+        Map<String, String> datos = new HashMap<String, String>();
+        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Reporte_Activity.this, Reporte_Activity.this);
+        datos.put("method", "list_incidence");
+        ws.setDatos(datos);
+        ws.execute("");*/
+    }
+
+    @Override
+    public void processFinish(String result) throws JSONException {
+/*
+            JSONArray jsonArray = new JSONArray(result);
+            tiposIncidencias = new String[jsonArray.length()];
+            for (int i=0;i<jsonArray.length();i++){
+                JSONObject c = jsonArray.getJSONObject(i);
+
+                tiposIncidencias[i]=c.getString("tipo_incidencia");
+            }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, tiposIncidencias);
+            arrayAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_dropdown_item_1line, tiposIncidencias);
+
+            materialDesignSpinner.setAdapter(arrayAdapter);*/
+
+
     }
 
     private void checkCameraPermission() {
