@@ -78,7 +78,7 @@ public class Login_Activity extends AppCompatActivity implements TextView.OnClic
             Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_LONG);
         }else{
             //Respuesta de Registro de Usuario
-            Person_Reporid perfil_usuario = new Person_Reporid(jsonObject);
+            SplashScreen.person_reporid = new Person_Reporid(jsonObject);
 
             //Guardado de sesión
             SharedPreferences sharedPreferences = getSharedPreferences("ReporID", Context.MODE_PRIVATE);

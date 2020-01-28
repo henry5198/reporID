@@ -51,7 +51,7 @@ import WebService.WebService;
 
 public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
 
-    private String[] tiposIncidencias={"Robo a persona","Robo a vehiculo","Robo a comercio","Homicidio","Venta de Drogas","Accidente Vehicular","Pelea"};
+    private String[] tiposIncidencias={"Robo a persona","Robo a vehículo","Robo a casa","Robo a comercio","Actividad sospechosa","Homicidio","Vandalismo","Venta de drogas","Otros"};
     private Toolbar toolbar;
     private TextInputEditText txtFecha, txtDescripcion;
     private int dia, mes, anio;
@@ -93,8 +93,9 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         latitud=getIntent().getDoubleExtra("latitud",0.0);
         longitud=getIntent().getDoubleExtra("longitud",0.0);
 
+        String identificador = SplashScreen.person_reporid.getIdentificacion();
         //Firebase
-        storageReference= FirebaseStorage.getInstance().getReference("0850029802");
+        storageReference= FirebaseStorage.getInstance().getReference(identificador);
         checkCameraPermission();
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
@@ -114,7 +115,9 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
 
     @Override
     public void processFinish(String result) throws JSONException {
-/*
+
+        String pr = result;
+        /*
             JSONArray jsonArray = new JSONArray(result);
             tiposIncidencias = new String[jsonArray.length()];
             for (int i=0;i<jsonArray.length();i++){
@@ -177,6 +180,7 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     }
 
     public void subirImagen(int codigo, Uri uri){
+
         dial.setTitle("Subiendo");
         dial.setMessage("imagen");
         dial.setCancelable(false);
@@ -229,7 +233,7 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
 
     public void obtenerUrl(Context context, String url){
         Url=url;
-        Url="";
+        Registrar_Server();
     }
 
     public void onClick(View v) {
@@ -248,6 +252,7 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     }
 
     public void registrar(View n){
+
         if(materialDesignSpinner.getText().toString().equals("")||materialDesignSpinner.equals(null)
         ||(galeria==false&&camara==false)){
             Toast.makeText(getApplicationContext(),"Faltan algunos campos",Toast.LENGTH_SHORT).show();
@@ -257,6 +262,8 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
             }else {
                 subirImagen(1,uri);
             }
+
+
         }
     }
 
@@ -306,4 +313,50 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
                     }
                 }).show();
     }
+
+    public void Registrar_Server(){
+        JSONObject jsn_datos = new JSONObject();
+        JSONArray array_datos = new JSONArray();
+        try {
+            jsn_datos.put("descripcion", txtDescripcion.getText().toString());
+            jsn_datos.put("perfil_identificacion", SplashScreen.person_reporid.getIdentificacion());
+            jsn_datos.put("fecha_reporte", txtFecha.getText().toString());
+            jsn_datos.put("latitud_geo", String.valueOf(latitud));
+            jsn_datos.put("longitud_geo", String.valueOf(longitud));
+            jsn_datos.put("directorio",Url);
+            if (swAnonimo.isChecked()){
+                jsn_datos.put("tipo_denuncia", 1);
+            }else{
+                jsn_datos.put("tipo_denuncia", 0);
+            }
+            jsn_datos.put("directorio", Url);
+            int indice = posicion(materialDesignSpinner.getText().toString());
+            jsn_datos.put("incidencia_id_incidencia",indice);
+
+            array_datos.put(jsn_datos);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> datos = new HashMap<String, String>();
+        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos,Reporte_Activity.this, Reporte_Activity.this);
+        datos.put("data", String.valueOf(array_datos));
+        datos.put("method", "register_report");
+        ws.setDatos(datos);
+        ws.execute("");
+    }
+
+    public int posicion(String seleccionado){
+        int indice=0;
+        for (int i=0;i<tiposIncidencias.length;i++){
+            if(seleccionado.equals(tiposIncidencias[i])){
+                indice=i+1;
+                break;
+            }
+        }
+        return indice;
+    }
 }
+

@@ -126,7 +126,7 @@ public class Register_Activity extends AppCompatActivity implements Asynchtask {
 
 
                 //Respuesta de Registro de Usuario
-                Person_Reporid perfil_usuario = new Person_Reporid(jsonObject);
+                SplashScreen.person_reporid = new Person_Reporid(jsonObject);
 
                 //Guardado de sesión
                 SharedPreferences sharedPreferences = getSharedPreferences("ReporID", Context.MODE_PRIVATE);

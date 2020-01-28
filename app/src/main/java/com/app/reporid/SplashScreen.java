@@ -13,6 +13,7 @@ import org.json.JSONObject;
 public class SplashScreen extends Activity {
 
     public static String server = "https://intense-brook-70197.herokuapp.com";
+    public static Person_Reporid person_reporid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,7 @@ public class SplashScreen extends Activity {
                 startActivity(intent);
                 finish();
             }else{
-                Person_Reporid person_reporid = new Person_Reporid(new JSONObject(resultado));
+                person_reporid = new Person_Reporid(new JSONObject(resultado));
                 intent = new Intent(SplashScreen.this, Principal_Activity.class);
                 startActivity(intent);
                 finish();

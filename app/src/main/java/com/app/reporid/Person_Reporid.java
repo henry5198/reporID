@@ -17,12 +17,13 @@ public class Person_Reporid {
     }
     public Person_Reporid(JSONObject datos){
         try {
-            identificacion = datos.getString("");
-            identificador_persona = datos.getString("");
-            nombres = datos.getString("");
-            apellidos = datos.getString("");
-            correo_electronico = datos.getString("");
-            celular = datos.getString("");
+            identificador_persona = datos.getString("id_persona");
+            nombres = datos.getString("nombres");
+            apellidos = datos.getString("apellidos");
+            correo_electronico = datos.getString("correo");
+            celular = datos.getString("celular");
+            identificacion = datos.getString("identificacion");
+            directorio_perfil = datos.getString("directorio_perfil");
         } catch (JSONException e) {
             e.printStackTrace();
         }

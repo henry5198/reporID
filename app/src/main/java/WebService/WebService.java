@@ -61,7 +61,7 @@ public class WebService extends AsyncTask<String, Long, String> {
         progDailog.setIndeterminate(false);
         progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDailog.setCancelable(true);
-        progDailog.show();
+        //progDailog.show();
     }
     @Override
     protected String doInBackground(String... params) {
