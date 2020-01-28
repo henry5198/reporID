@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">ReporID</string>
+    <string name="text_log">Correo Electrónico</string>
+    <string name="pass_log">Contraseña</string>
+    <string name="text_btn_log">Ingresar</string>
+    <string name="text_fog">¿Se te olvidó tu contraseña?</string>
+    <string name="text_quest_signup">¿No tienes una cuenta?</string>
+    <string name="text_signup"><u>Regístrate</u></string>
+
+    <!--Activity Register-->
+    <string name="act_register">Registrar Usuario</string>
+    <string name="text_regcedula">Identificación</string>
+    <string name="text_regnombres">Nombres</string>
+    <string name="text_regapellidos">Apellidos</string>
+    <string name="text_regcorreo">Correo Electrónico</string>
+    <string name="text_regcontrasena">Contraseña</string>
+    <string name="text_regrepcontrasena">Confirmar Contraseña</string>
+    <string name="text_regcelular">Celular</string>
+    <string name="text_btn_reg">Registrarse</string>
+
+    <!--Activity RecuperarActivity-->
+    <string name="text_recupera">Escribir código de confirmación</string>
+    <string name="text_mensaje">Se envió un código de confirmación a su correo</string>
+    <string name="btn_enviar">Enviar</string>
+
+    <!--Activity RestablecerClaveActivity-->
+    <string name="text_restablecer">Ingrese su nueva contraseña</string>
+    <string name="btn_restablecer">Aceptar</string>
+
+    <!--Activity NotificacionActivity-->
+    <string name="text_notificaciones">Notificaciones</string>
+
+    <!--Activity Reporte_Activity-->
+    <string name="text_descripcion">Describa lo que sucedió</string>
+    <string name="text_combo">Tipo de insidencia</string>
+    <string name="text_fecha">Fecha</string>
+    <string name="text_anonimo">Anónimo</string>
+    <string name="btn_enviare">Enviar</string>
+
+    <!--Activity Principal-->
+    <string name="text_mapa">Mapa</string>
+    <string name="text_noticias">Noticias</string>
+
+</resources>
+

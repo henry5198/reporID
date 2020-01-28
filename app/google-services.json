@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "474864109705",
+    "firebase_url": "https://reporid-acefa.firebaseio.com",
+    "project_id": "reporid-acefa",
+    "storage_bucket": "reporid-acefa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474864109705:android:0a8481b7354be057115e58",
+        "android_client_info": {
+          "package_name": "com.app.reporid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474864109705-doe0q1ti58ola606gb3htaasojfgkvcu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.reporid",
+            "certificate_hash": "a8e2292ed48ba996bc3b414a1f9a38d46fa46fcd"
+          }
+        },
+        {
+          "client_id": "474864109705-p8kedgv5b4que8ublpttoooqumuo9qap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYSJ1WvBeknjasGrjV2cGirwoC2fpaDnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474864109705-p8kedgv5b4que8ublpttoooqumuo9qap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
