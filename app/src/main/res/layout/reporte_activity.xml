@@ -122,13 +122,19 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="7dp"
                 android:src="@drawable/camara" />
+            <!--<VideoView
+                android:id="@+id/vdGaleria"
+                android:layout_width="100dp"
+                android:layout_height="110dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="170dp"
+                android:layout_marginTop="-110dp"/>-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEnviar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="25dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginEnd="20dp"
                 android:onClick="registrar"

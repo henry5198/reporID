@@ -164,7 +164,37 @@
                 android:onClick="registrar"
                 android:text="@string/text_btn_reg"
                 android:textColor="@color/colorBlank"
-                android:textSize="24dp"
+                android:textSize="24sp"
+                app:cornerRadius="350in"/>
+            <com.google.android.material.button.MaterialButton
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:onClick="registrar"
+                android:text="@string/text_btn_reg"
+                android:textColor="@color/colorBlank"
+                android:textSize="24sp"
+                app:cornerRadius="350in"/>
+            <com.google.android.material.button.MaterialButton
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:onClick="registrar"
+                android:text="@string/text_btn_reg"
+                android:textColor="@color/colorBlank"
+                android:textSize="24sp"
+                app:cornerRadius="350in"/>
+            <com.google.android.material.button.MaterialButton
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:onClick="registrar"
+                android:text="@string/text_btn_reg"
+                android:textColor="@color/colorBlank"
+                android:textSize="24sp"
                 app:cornerRadius="350in"/>
         </LinearLayout>
     </ScrollView>

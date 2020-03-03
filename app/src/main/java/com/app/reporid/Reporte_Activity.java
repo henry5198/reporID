@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +57,7 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     private String[] tiposIncidencias={"Robo a persona","Robo a vehículo","Robo a casa","Robo a comercio","Actividad sospechosa","Homicidio","Vandalismo","Venta de drogas","Otros"};
     private Toolbar toolbar;
     private TextInputEditText txtFecha, txtDescripcion;
-    private int dia, mes, anio;
+    private int dia, mes, anio, hora, min, ss;
     private Button btnEnviar, btnCamara;
     private Double latitud, longitud;
     private boolean camara=false, galeria=false;
@@ -66,8 +69,10 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     private String fecha, tipoDelito, Url;
     private Switch swAnonimo;
     ProgressDialog dial;
-
-
+    private final int CODE_ONE_IMAGE=1;
+    private final int CODE_MULTI_IMAGE=2;
+    private final int CODE_ONE_VIDEO=3;
+    private final int CODE_MULTI_VIDEO=4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +88,8 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         btnCamara = (Button)findViewById(R.id.btnCamara);
         imgCamara = (ImageView)findViewById(R.id.imgCamara);
         btnEnviar=(Button)findViewById(R.id.btnEnviar);
-
         dial=new ProgressDialog(this);
+        init();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,10 +118,23 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         ws.execute("");*/
     }
 
+    public void init(){
+        final Calendar c = Calendar.getInstance();
+        dia=c.get(Calendar.DAY_OF_MONTH);
+        mes=c.get(Calendar.MONTH);
+        anio=c.get(Calendar.YEAR);
+        hora = c.get(Calendar.HOUR);
+        min = c.get(Calendar.MINUTE);
+        ss = c.get(Calendar.SECOND);
+        txtFecha.setText(dia+"/"+(mes+1)+"/"+anio+" "+hora+":"+min+":"+ss);
+    }
+
     @Override
     public void processFinish(String result) throws JSONException {
 
         String pr = result;
+
+
         /*
             JSONArray jsonArray = new JSONArray(result);
             tiposIncidencias = new String[jsonArray.length()];
@@ -163,8 +181,22 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         Intent intent=new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent,1);
-    }
 
+        /* //Subir varias Imagenes a Firebase
+        Intent intent=new Intent();
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Seleccione varias imagenes"),CODE_MULTI_IMAGE);*/
+
+        /* //Subir varios videos a Firebase
+        Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+        intent.setType("video/mp4");
+        startActivityForResult(intent, CODE_MULTI_VIDEO);*/
+    }
+    ArrayList<Uri> uris_galeria=null;
+    ArrayList<Uri> uris_videos=null;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
@@ -177,8 +209,45 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
             uri=data.getData();
             imgCamara.setImageURI(uri);
         }
-    }
 
+
+        /* //Subir varias Imagenes a Firebase
+        if(requestCode==CODE_MULTI_IMAGE&&resultCode==Activity.RESULT_OK){
+            ClipData clipData=data.getClipData();
+            if(clipData!=null){
+                imgCamara.setImageURI(clipData.getItemAt(0).getUri());
+                uris_galeria=new ArrayList<>();
+                urls=new ArrayList<>();
+                //MAS IMGS
+                for (int i=0;i<clipData.getItemCount();i++){
+                    ClipData.Item item=clipData.getItemAt(i);
+                    Uri uri=item.getUri();
+                    uris_galeria.add(uri);
+                    //Log.e("IMGS",uri.toString());
+                }
+            }
+        }*/
+
+        /* //Subir varios videos a Firebase
+        if(requestCode==CODE_MULTI_VIDEO&&resultCode==RESULT_OK){
+            ClipData clipData=data.getClipData();
+            if(clipData!=null){
+                vdGaleria=(VideoView)findViewById(R.id.vdGaleria);
+                vdGaleria.setVideoURI(clipData.getItemAt(0).getUri());
+                vdGaleria.start();
+
+                //MAS VIDEOS
+                uris_videos=new ArrayList<>();
+                urls_videos=new ArrayList<>();
+                for (int i=0;i<clipData.getItemCount();i++){
+                    ClipData.Item item=clipData.getItemAt(i);
+                    Uri uri=item.getUri();
+                    uris_videos.add(uri);
+                }
+            }
+        }*/
+    }
+    private VideoView vdGaleria;
     public void subirImagen(int codigo, Uri uri){
 
         dial.setTitle("Subiendo");
@@ -231,21 +300,24 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
         }
     }
 
+    ArrayList<String> urls=null;
+    ArrayList<String> urls_videos=null;
     public void obtenerUrl(Context context, String url){
         Url=url;
+        //Subir varias Imagenes a Firebase
+        //urls.add(url);
+
+        //Subir varios videos a Firebase
+        //urls_videos.add(url);
+
         Registrar_Server();
     }
 
     public void onClick(View v) {
-        final Calendar c = Calendar.getInstance();
-        dia=c.get(Calendar.DAY_OF_MONTH);
-        mes=c.get(Calendar.MONTH);
-        anio=c.get(Calendar.YEAR);
-
         DatePickerDialog datePickerDialog=new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                txtFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
+                txtFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year+" "+hora+":"+min+":"+ss );
             }
         },dia,mes,anio);
         datePickerDialog.show();
@@ -262,9 +334,69 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
             }else {
                 subirImagen(1,uri);
             }
-
-
         }
+        /* //Subir Varias Imágenes a Firebase
+        dial.setTitle("Subiendo");
+        dial.setMessage("imagen");
+        dial.setCancelable(false);
+        dial.show();
+        tipoDelito=materialDesignSpinner.getText().toString().replace(" ","-");
+
+        for (int i=0;i<uris_galeria.size();i++){
+            Date date = new Date();
+            DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            fecha=hourdateFormat.format(date).toString().replace("/","").replace(":","").replace(" ","-")+(String.valueOf(i));
+            final StorageReference filepath= storageReference.child(tipoDelito).child(fecha);
+            filepath.putFile(uris_galeria.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Toast.makeText(getApplicationContext(),"Subido correctamente",Toast.LENGTH_SHORT).show();
+
+                    final StorageReference storageRef = filepath;
+                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String urs=uri.toString();
+                            obtenerUrl(Reporte_Activity.this, urs);
+                        }
+                    });
+                    dial.dismiss();
+                    dialogo();
+                }
+            });
+        }*/
+
+
+        /* //Subir varios videos a Firebase
+        dial.setTitle("Subiendo");
+        dial.setMessage("imagen");
+        dial.setCancelable(false);
+        dial.show();
+        tipoDelito=materialDesignSpinner.getText().toString().replace(" ","-");
+        for (int i=0;i<uris_videos.size();i++){
+            Date date = new Date();
+            DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            fecha=hourdateFormat.format(date).toString().replace("/","").replace(":","").replace(" ","-")+String.valueOf(i);
+
+            final StorageReference filepath= storageReference.child(tipoDelito).child(fecha);
+            filepath.putFile(uris_videos.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Toast.makeText(getApplicationContext(),"Subido correctamente",Toast.LENGTH_SHORT).show();
+
+                    final StorageReference storageRef = filepath;
+                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String urs=uri.toString();
+                            obtenerUrl(Reporte_Activity.this, urs);
+                        }
+                    });
+                    dial.dismiss();
+                    dialogo();
+                }
+            });
+        }*/
     }
 
     public void dialogo(){
@@ -315,6 +447,10 @@ public class Reporte_Activity extends AppCompatActivity implements Asynchtask {
     }
 
     public void Registrar_Server(){
+        /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String tiempo = simpleDateFormat.format(Calendar)*/
+
         JSONObject jsn_datos = new JSONObject();
         JSONArray array_datos = new JSONArray();
         try {

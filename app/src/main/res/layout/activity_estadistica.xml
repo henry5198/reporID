@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Estadistica">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_height="56dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/back_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTodo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="todos"
+            android:text="@string/text_btn_todos"
+            android:textColor="@color/colorBlank"
+            android:textSize="15dp"
+            app:cornerRadius="350in"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFiltro"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="filtro"
+            android:text="@string/text_btn_filtro"
+            android:textColor="@color/colorBlank"
+            android:textSize="15dp"
+            app:cornerRadius="350in"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn30Dias"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="dias30"
+            android:text="@string/text_btn_30dias"
+            android:textColor="@color/colorBlank"
+            android:textSize="15dp"
+            app:cornerRadius="350in"/>
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/PieChart"
+        android:layout_width="290dp"
+        android:layout_height="250dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="115dp" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/BarChart"
+        android:layout_width="310dp"
+        android:layout_height="250dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="392dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="311dp"
+        android:text="Reportes por Mes"
+        android:textAlignment="center" />
+    <TextView
+        android:id="@+id/txtAnio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="35dp"
+        android:text="Año 2020"
+        android:textAlignment="viewStart" />
+
+</RelativeLayout>

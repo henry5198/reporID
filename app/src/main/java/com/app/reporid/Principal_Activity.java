@@ -1,13 +1,19 @@
 package com.app.reporid;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -19,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,7 +43,7 @@ import java.util.Map;
 import WebService.Asynchtask;
 import WebService.WebService;
 
-public class Principal_Activity extends AppCompatActivity implements Asynchtask, OnMapReadyCallback {
+public class Principal_Activity extends AppCompatActivity implements Asynchtask, OnMapReadyCallback, BottomNavigationView.OnNavigationItemSelectedListener{
 
     private List<VariablesReportes> items=new ArrayList<>();
     public GoogleMap mapa;
@@ -49,6 +57,9 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
     private FloatingActionButton btnAcepta;
     private Boolean seleccionado=false;
     private Double latitud, longitud;
+    private BottomNavigationView bottomNavigationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +70,13 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
         btnCancela=(FloatingActionButton)findViewById(R.id.btnCancela);
         btnAcepta=(FloatingActionButton)findViewById(R.id.btnAcepta);
         btnAcepta.hide(); btnCancela.hide(); btnReporte.show();
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottonNavView_bar);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         Map<String, String> datos = new HashMap<String, String>();
         WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
-        datos.put("method", "list_new_report");
+        //datos.put("method", "list_new_report");
+        datos.put("method", "list_reports_48hr");
         ws.setDatos(datos);
         ws.execute("");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -71,8 +85,14 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
     }
 
     @Override
-    public void processFinish(String result) throws JSONException {
+    protected void onRestart() {
+        super.onRestart();
+        this.recreate();
+    }
 
+    @Override
+    public void processFinish(String result) throws JSONException {
+            items.clear();
             try {
                 JSONArray jsonArray = new JSONArray(result);
                 //JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -93,13 +113,19 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
                             insidencia= insidencia+c1.getString("tipo_incidencia")+"\n";
 
                     }
-                    String img="https://png.pngtree.com/png-clipart/20190922/original/pngtree-illustration-of-a-policeman-chasing-a-thief-with-stolen-bag-png-image_4795709.jpg";
+                    JSONArray imagen = c.getJSONArray("multimedia");
+                    String img = "";
+                    for (int j = 0; j < imagen.length(); j++){
+                        JSONObject c1 = imagen.getJSONObject(j);
+                        img = c1.getString("directorio");
+                    }
                     items.add(new VariablesReportes(latitud,longitud,img,insidencia,descripcion,fecha_reporte));
                 }
             }catch (Exception ex){
                 ex.printStackTrace();
             }
 
+            mapa.clear();
             for(int i = 0; i < items.size(); i++){
                 VariablesReportes vp = items.get(i);
                 LatLng punto = new LatLng(vp.getLatitud(), vp.getLongitud());
@@ -114,8 +140,6 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
 
             adapter= new ReporteAdapter(items);
             recycle.setAdapter(adapter);
-
-
     }
 
     @Override
@@ -128,12 +152,12 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
         mapa.moveCamera(camUpd1);
     }
 
-
     public void reporte(View v) {
         Toast.makeText(this,"Seleccione la Ubicación", Toast.LENGTH_LONG).show();
         btnReporte.hide();
         btnCancela.show();
         btnAcepta.show();
+
         seleccionado=false;
         mapa.clear();
         mapa.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -152,6 +176,13 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
         });
 
     }
+
+    public void estadistica(View v){
+
+        Intent intent = new Intent(Principal_Activity.this, Estadistica.class);
+        startActivity(intent);
+    }
+
     public void acepta(View v){
 
         if(seleccionado){
@@ -159,6 +190,7 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
             intent.putExtra("latitud",latitud);
             intent.putExtra("longitud",longitud);
             seleccionado=false;
+
             startActivity(intent);
         }else{
             Toast.makeText(this,"No ha seleccionado la ubicación", Toast.LENGTH_LONG).show();
@@ -172,11 +204,109 @@ public class Principal_Activity extends AppCompatActivity implements Asynchtask,
         btnAcepta.hide();
         mapa.clear();
         seleccionado=false;
-        for(int i = 0; i < items.size(); i++){
-            VariablesReportes vp = items.get(i);
-            LatLng punto = new LatLng(vp.getLatitud(), vp.getLongitud());
-            mapa.addMarker(new MarkerOptions().position(punto).title(vp.getTipoReporte()));
-        }
+
+        Map<String, String> datos = new HashMap<String, String>();
+        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+        //datos.put("method", "list_new_report");
+        datos.put("method", "list_reports_48hr");
+        ws.setDatos(datos);
+        ws.execute("");
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.id_filtro:
+                AlertDialog.Builder alertBuilder=new AlertDialog.Builder(Principal_Activity.this);
+                View view=getLayoutInflater().inflate(R.layout.activity_filtro,null);
+
+                Button btnAceptar=(Button)view.findViewById(R.id.btnAceptar);
+                MaterialButton btnUlt48horas=(MaterialButton)view.findViewById(R.id.btnUlt48Horas);
+                MaterialButton btnUlt7Dias=(MaterialButton)view.findViewById(R.id.btnUlt7Dias);
+                MaterialButton btnUlt15Dias=(MaterialButton)view.findViewById(R.id.btnUlt15Dias);
+                MaterialButton btnUlt30Dias=(MaterialButton)view.findViewById(R.id.btnUlt30Dias);
+                MaterialButton btnMasDe30Dias=(MaterialButton)view.findViewById(R.id.btnMasDe30Dias);
+                alertBuilder.setView(view);
+                final AlertDialog dialog=alertBuilder.create();
+                dialog.show();
+                btnUlt48horas.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mapa.clear();
+                        Map<String, String> datos = new HashMap<String, String>();
+                        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+                        datos.put("method", "list_reports_48hr");
+                        ws.setDatos(datos);
+                        ws.execute("");
+                        dialog.dismiss();
+                    }
+                });
+                btnUlt7Dias.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mapa.clear();
+                        Map<String, String> datos = new HashMap<String, String>();
+                        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+                        datos.put("method", "list_reports_7days");
+                        ws.setDatos(datos);
+                        ws.execute("");
+                        dialog.dismiss();
+                    }
+                });
+                btnUlt15Dias.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mapa.clear();
+                        Map<String, String> datos = new HashMap<String, String>();
+                        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+                        datos.put("method", "list_reports_15days");
+                        ws.setDatos(datos);
+                        ws.execute("");
+                        dialog.dismiss();
+                    }
+                });
+                btnUlt30Dias.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mapa.clear();
+                        Map<String, String> datos = new HashMap<String, String>();
+                        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+                        datos.put("method", "list_reports_30days");
+                        ws.setDatos(datos);
+                        ws.execute("");
+                        dialog.dismiss();
+                    }
+                });
+                btnMasDe30Dias.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mapa.clear();
+                        Map<String, String> datos = new HashMap<String, String>();
+                        WebService ws= new WebService("https://reporid-city.herokuapp.com/method.php",datos, Principal_Activity.this, Principal_Activity.this);
+                        datos.put("method", "list_reports_30plus");
+                        ws.setDatos(datos);
+                        ws.execute("");
+                        dialog.dismiss();
+                    }
+                });
+                btnAceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                break;
+            case R.id.ic_arrow:
+                Intent intent1 = new Intent(Principal_Activity.this, noticias_activity.class);
+                startActivity(intent1);
+                break;
+            case R.id.id_perfil:
+                Intent intent = new Intent(Principal_Activity.this, Perfil_Activity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
+
 
 }

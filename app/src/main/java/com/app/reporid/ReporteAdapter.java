@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 //import com.squareup.picasso.Picasso;
@@ -43,7 +46,9 @@ public class ReporteAdapter extends RecyclerView.Adapter<ReporteAdapter.Reportes
 
     @Override
     public void onBindViewHolder(@NonNull ReportesViewHolder viewHolder, final int i) {
-
+        Glide.with(viewHolder.imagenNew.getContext())
+                .load(items.get(i).getImagen())
+                .into(viewHolder.imagenNew);
         viewHolder.tipoDeReporte.setText("Tipo: "+items.get(i).getTipoReporte());
         viewHolder.fechaReporte.setText("Fecha: "+items.get(i).getFechaReporte());
         viewHolder.descripcionReporte.setText("Descrip: "+items.get(i).getDescripcionReporte());

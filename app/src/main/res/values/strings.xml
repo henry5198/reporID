@@ -40,6 +40,25 @@
     <!--Activity Principal-->
     <string name="text_mapa">Mapa</string>
     <string name="text_noticias">Noticias</string>
+    <string name="ult48_horas">48 Horas</string>
+    <string name="ult7_dias">7 Días</string>
+    <string name="ult15_dias">15 Días</string>
+    <string name="ult30_dias">30 Días</string>
+    <string name="mas_de_30dias">+30 Días</string>
+    <string name="btnCancela">Cancelar</string>
+
+    <!-- Activity Estadistica-->
+    <string name="text_btn_todos">Todos</string>
+    <string name="text_btn_30dias">30 Días</string>
+    <string name="text_btn_filtro">Filtro</string>
+    <string name="signin">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+
+    <string name="fechaInicio">Fecha Inicio</string>
+    <string name="fechaFin">Fecha Fin</string>
+
+    <string name="txt_perfil">Perfil</string>
+
 
 </resources>
 

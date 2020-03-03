@@ -14,11 +14,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Reporte_Activity"
-            android:parentActivityName=".Principal_Activity"/>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".noticias_activity"
+            android:parentActivityName=".Principal_Activity"></activity>
+        <activity
+            android:name=".Perfil_Activity"
+            android:parentActivityName=".Principal_Activity" />
+        <activity
+            android:name=".Estadistica"
+            android:parentActivityName=".Principal_Activity" />
+        <activity
+            android:name=".Reporte_Activity"
+            android:parentActivityName=".Principal_Activity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
